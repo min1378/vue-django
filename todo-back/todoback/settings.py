@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-
+import datetime
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -31,6 +31,12 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # local apps
+    'todos',
+
+    # Third party app
+    'rest_framework',
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +45,34 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+# http://jpadilla.github.io/django-rest-framework-jwt/#usage
+REST_FRAMEWORK = {
+    # 로그인 여부를 확인해주는 클래스
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+
+    # 인증 여부를 확인하는 클래스
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
+# https://jpadilla.github.io/django-rest-framework-jwt/#additional-settings
+JWT_AUTH = {
+    # SECRET_KEY 위쪽에 있음
+    # Token 을 서명할 시크릿 키를 등록 (절대 외부 노출 금지). default 가 settings.SECRET_KEY
+    'JWT_SECRET_KEY': SECRET_KEY,
+    'JWT_ALGORITHM': 'HS256', # default 값
+    'JWT_ALLOW_REFRESH': True,
+    # 유효기간, default 유효기간은 5분, 지금은 1주일간 유효한 토큰으로 설정
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7), 
+    # 28일 마다 토큰이 갱신 (유효기간 연장시)
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),
+
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -47,7 +81,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # https://github.com/adamchainz/django-cors-headers/#Setup
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'todoback.urls'
 
@@ -118,3 +155,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+AUTH_USER_MODEL = 'todos.User'
