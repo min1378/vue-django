@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
-
+# view 함수로 들어가기 전 인증 및 로그인 여부를 확인해주는 세팅
 # http://jpadilla.github.io/django-rest-framework-jwt/#usage
 REST_FRAMEWORK = {
     # 로그인 여부를 확인해주는 클래스
@@ -61,6 +61,7 @@ REST_FRAMEWORK = {
 }
 
 # https://jpadilla.github.io/django-rest-framework-jwt/#additional-settings
+
 JWT_AUTH = {
     # SECRET_KEY 위쪽에 있음
     # Token 을 서명할 시크릿 키를 등록 (절대 외부 노출 금지). default 가 settings.SECRET_KEY
@@ -85,6 +86,8 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'todoback.urls'
 
